@@ -1,0 +1,62 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="yry" id="1">
+        <createTable tableName="user">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" unique="true"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)"/>
+            <column defaultValueBoolean="false" name="disabled" type="BIT(1)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="last_modified" type="datetime"/>
+            <column name="role" type="VARCHAR(255)" defaultValue="ROLE_USER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="yry">
+        <insert tableName="user">
+            <column name="id" value="1"/>
+            <column name="username" value="admin"/>
+            <!-- admin-->
+            <column name="password" value="$2a$10$UnqSbfUy0cYkgujRLq7b6utqEDDbPv.fBTFZ.UHPlq7dzcMvlbYgu"/>
+            <column name="role" value="ROLE_ADMIN"/>
+        </insert>
+        <insert tableName="user">
+            <column name="id" value="2"/>
+            <column name="username" value="test"/>
+            <!-- admin-->
+            <column name="password" value="$2a$10$UnqSbfUy0cYkgujRLq7b6utqEDDbPv.fBTFZ.UHPlq7dzcMvlbYgu"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="yry" id="3">
+        <createTable tableName="article">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" unique="true"/>
+            </column>
+            <column name="title" type="VARCHAR(255)" />
+            <column name="content" type="TEXT"/>
+            <!--       0: active, 1: submit 2: draft     /-->
+            <column name="status" type="BIT(1)" defaultValueNumeric="2"/>
+            <column name="publisher" type="VARCHAR(255)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="last_modified" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="yry" author="4">
+        <sql dbms="mysql">
+            alter table article modify last_modified datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE
+            CURRENT_TIMESTAMP;
+            alter table user modify last_modified datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE
+            CURRENT_TIMESTAMP;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
